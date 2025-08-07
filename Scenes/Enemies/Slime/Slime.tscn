@@ -1,7 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://bl5iy6fs2h6at"]
+[gd_scene load_steps=9 format=3 uid="uid://bl5iy6fs2h6at"]
 
 [ext_resource type="Texture2D" uid="uid://cjyxcorfof8ve" path="res://Assets/Textures/Enemies/yellow_slime.png" id="1_f0k3c"]
 [ext_resource type="Script" uid="uid://b0n5jewcyj7wi" path="res://Scenes/Enemies/Slime/Slime.gd" id="1_p1xxi"]
+[ext_resource type="AudioStream" uid="uid://bnywct0uws1k7" path="res://Assets/SFX/monster_death.mp3" id="3_va205"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_p1xxi"]
 atlas = ExtResource("1_f0k3c")
@@ -22,7 +23,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"idle",
-"speed": 8.0
+"speed": 2.0
 }]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_oi5nh"]
@@ -39,9 +40,14 @@ sprite_frames = SubResource("SpriteFrames_xsyo3")
 animation = &"idle"
 
 [node name="SlimeCollision" type="CollisionShape2D" parent="."]
+scale = Vector2(4, 4)
 shape = SubResource("CircleShape2D_oi5nh")
 
 [node name="HitBox" type="Area2D" parent="."]
 
 [node name="HitBoxCollision" type="CollisionShape2D" parent="HitBox"]
+scale = Vector2(4, 4)
 shape = SubResource("CircleShape2D_qmdr4")
+
+[node name="DeathSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_va205")

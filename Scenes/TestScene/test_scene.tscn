@@ -1,7 +1,8 @@
-[gd_scene load_steps=6 format=4 uid="uid://c6373vqpynsk4"]
+[gd_scene load_steps=7 format=4 uid="uid://c6373vqpynsk4"]
 
 [ext_resource type="PackedScene" uid="uid://c81ow8gu88mxm" path="res://Scenes/Player/player.tscn" id="1_4a7y3"]
 [ext_resource type="Texture2D" uid="uid://c8mcdoscvltbs" path="res://Assets/Textures/Tilesets/farm_tileset.png" id="1_boajs"]
+[ext_resource type="Script" uid="uid://c06lpl4dg1lpy" path="res://Scenes/TestScene/camera.gd" id="1_w5fok"]
 [ext_resource type="PackedScene" uid="uid://bl5iy6fs2h6at" path="res://Scenes/Enemies/Slime/Slime.tscn" id="3_boajs"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_w5fok"]
@@ -37,6 +38,8 @@ texture = ExtResource("1_boajs")
 sources/0 = SubResource("TileSetAtlasSource_w5fok")
 
 [node name="TestScene" type="Node2D"]
+scale = Vector2(1.0024, 1)
+script = ExtResource("1_w5fok")
 
 [node name="TileMapLayer" type="TileMapLayer" parent="."]
 scale = Vector2(4, 4)
@@ -52,8 +55,44 @@ position = Vector2(0, 1)
 [node name="Slime" parent="." instance=ExtResource("3_boajs")]
 position = Vector2(841, 546)
 
+[node name="Slime12" parent="." instance=ExtResource("3_boajs")]
+position = Vector2(760.178, 557)
+
+[node name="Slime13" parent="." instance=ExtResource("3_boajs")]
+position = Vector2(687.353, 564)
+
+[node name="Slime14" parent="." instance=ExtResource("3_boajs")]
+position = Vector2(732.245, 629)
+
+[node name="Slime15" parent="." instance=ExtResource("3_boajs")]
+position = Vector2(815.046, 620)
+
 [node name="Slime2" parent="." instance=ExtResource("3_boajs")]
 position = Vector2(376, 491)
 
 [node name="Slime3" parent="." instance=ExtResource("3_boajs")]
-position = Vector2(950, 313)
+position = Vector2(1018.56, 362)
+
+[node name="Slime4" parent="." instance=ExtResource("3_boajs")]
+position = Vector2(1342.78, 676)
+
+[node name="Slime5" parent="." instance=ExtResource("3_boajs")]
+position = Vector2(1393.66, 420)
+
+[node name="Slime6" parent="." instance=ExtResource("3_boajs")]
+position = Vector2(1361.74, 138)
+
+[node name="Slime7" parent="." instance=ExtResource("3_boajs")]
+position = Vector2(373.106, 785)
+
+[node name="Slime8" parent="." instance=ExtResource("3_boajs")]
+position = Vector2(-69.8326, 645)
+
+[node name="Slime9" parent="." instance=ExtResource("3_boajs")]
+position = Vector2(475.859, 962)
+
+[node name="Slime10" parent="." instance=ExtResource("3_boajs")]
+position = Vector2(-40.9019, 269)
+
+[node name="Slime11" parent="." instance=ExtResource("3_boajs")]
+position = Vector2(843.977, 903)

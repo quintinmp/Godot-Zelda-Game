@@ -2,35 +2,38 @@ extends CharacterBody2D
 
 @onready var slime_sprite: AnimatedSprite2D = $SlimeSprite
 @onready var hit_box: Area2D = $HitBox
+@onready var death_sound: AudioStreamPlayer = $DeathSound
 
 var health: int = 3
 var max_health: int = 3
 
 func _ready():
-	# Connect the hit detection
-	hit_box.area_entered.connect(_on_hit_box_area_entered)
-	
 	# Play idle animation
 	slime_sprite.play("idle")  # Assuming you have an idle animation
 	slime_sprite.scale = Vector2(4, 4)  # Scale to match your player
-	
-	print("Slime spawned with health: ", health)
-
-func _on_hit_box_area_entered(area: Area2D):
-	# Check if it's the player's attack
-	if area.name == "AttackArea":
-		take_damage(1)
 
 func take_damage(damage: int):
 	health -= damage
-	print("Slime took ", damage, " damage! Health: ", health)
 	
-	# Flash red or play hurt animation here if you want
+	# Knockback effect
+	var knockback_force = 100
+	var player = get_tree().get_first_node_in_group("player")
+	var knockback_direction = (global_position - player.global_position).normalized()
+	
+	var tween = create_tween()
+	var target_pos = global_position + (knockback_direction * knockback_force)
+	tween.tween_property(self, "global_position", target_pos, 0.2)
+	
+	# Trigger screen shake
+	get_tree().current_scene.add_screen_shake(1.0)
 	
 	if health <= 0:
 		die()
 
 func die():
-	print("Slime died!")
-	# You could play a death animation here
-	queue_free()  # Remove the slime from the scene
+	death_sound.pitch_scale = randf_range(0.8, 1.2)
+	death_sound.play()
+	await death_sound.finished
+	queue_free()
+	
+	
