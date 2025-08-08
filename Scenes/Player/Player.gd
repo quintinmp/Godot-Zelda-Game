@@ -10,6 +10,8 @@ var speed: float = 250.0
 var last_direction: Direction = Direction.DOWN
 var is_attacking = false
 var enemies_hit_this_attack = [] 
+var health = 100
+var i_frame_timer: float = 1.5
 
 # Animation name mappings
 var walk_anims = {
@@ -68,6 +70,8 @@ func _physics_process(_delta: float) -> void:
 	
 	if Input.is_action_just_pressed("attack"):
 		attack()  # Remove the "and input_vector.length() == 0" condition
+	
+	i_frame_timer = max(0, i_frame_timer - _delta)
 
 func update_direction(input_vector: Vector2):
 	if abs(input_vector.x) > abs(input_vector.y):
@@ -129,9 +133,9 @@ func _on_attack_area_entered(area: Area2D):
 		hit_sound.play()
 		await get_tree().create_timer(0.1).timeout
 		# Now do the hit stop
-		Engine.time_scale = 0.1
-		await get_tree().create_timer(0.01).timeout
-		Engine.time_scale = 1.0
+		#Engine.time_scale = 0.1
+		#await get_tree().create_timer(0.01).timeout
+		#Engine.time_scale = 1.0
 		
 		if is_instance_valid(slime) and not slime.is_queued_for_deletion():
 			slime.take_damage(1)
@@ -140,3 +144,31 @@ func _on_attack_finished():
 	if is_attacking:
 		attack_area.monitoring = false
 		is_attacking = false
+		
+func take_damage(damage: int, attacker):
+	print("take damage called - i_Frame_timer: ", i_frame_timer)
+	if i_frame_timer <= 0:
+		health -= damage
+		i_frame_timer = 1.5
+		print("player health", health)
+		
+		# Add player knockback
+		var knockback_force = 100
+		var knockback_direction = (global_position - attacker.global_position).normalized()
+		
+		var tween = create_tween()
+		var target_pos = global_position + (knockback_direction * knockback_force)
+		tween.tween_property(self, "global_position", target_pos, 0.2)
+		
+		start_i_frame_flash()
+	else:
+		print("damage blocked by i frames")
+
+func start_i_frame_flash():
+	var flash_tween = create_tween()
+	flash_tween.set_loops(8)  
+	flash_tween.tween_method(flash_red, 0.0, 1.0, 0.1)
+	flash_tween.tween_method(flash_red, 1.0, 0.0, 0.1)
+
+func flash_red(amount: float):
+	player_sprite.modulate = Color(1.0, 1.0 - amount, 1.0 - amount)  # Red flash

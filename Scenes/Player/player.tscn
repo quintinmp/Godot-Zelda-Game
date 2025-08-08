@@ -557,13 +557,15 @@ animations = [{
 "speed": 16.0
 }]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_v0iea"]
-size = Vector2(45, 98)
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_htcer"]
+radius = 22.0
+height = 98.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6b312"]
 size = Vector2(186, 97)
 
 [node name="Player" type="CharacterBody2D"]
+collision_mask = 4
 script = ExtResource("1_cvnsp")
 
 [node name="PlayerSprite" type="AnimatedSprite2D" parent="."]
@@ -573,11 +575,13 @@ sprite_frames = SubResource("SpriteFrames_igrcy")
 animation = &"walk_up"
 
 [node name="PlayerCollision" type="CollisionShape2D" parent="."]
-position = Vector2(1, 3)
-shape = SubResource("RectangleShape2D_v0iea")
+light_mask = 3
+position = Vector2(2, 0)
+shape = SubResource("CapsuleShape2D_htcer")
 
 [node name="AttackArea" type="Area2D" parent="."]
 position = Vector2(-14, 52)
+collision_mask = 2
 
 [node name="AttackCollision" type="CollisionShape2D" parent="AttackArea"]
 position = Vector2(0, 17.5)
