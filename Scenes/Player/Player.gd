@@ -1,158 +1,123 @@
 extends CharacterBody2D
 
-@onready var player_sprite: AnimatedSprite2D = $PlayerSprite
-@onready var attack_area: Area2D = $AttackArea
-@onready var swing_sound: AudioStreamPlayer = $SwingSound
-@onready var hit_sound: AudioStreamPlayer = $HitSound
+@onready var body_sprite: AnimatedSprite2D = $BodySprite
+@onready var head_sprite: AnimatedSprite2D = $HeadSprite
+@onready var weapon_sprite: Sprite2D = $WeaponSprite
+@onready var animation_player: AnimationPlayer = $AnimationPlayer
 
-enum Direction {UP, DOWN, LEFT, RIGHT}
+enum Direction {DOWN_LEFT, DOWN_RIGHT, UP_LEFT, UP_RIGHT}
 var speed: float = 250.0
-var last_direction: Direction = Direction.DOWN
-var is_attacking = false
-var enemies_hit_this_attack = [] 
+var last_direction: Direction = Direction.DOWN_LEFT
 var health = 100
+var is_attacking = false
 var i_frame_timer: float = 1.5
 
 # Animation name mappings
 var walk_anims = {
-	Direction.UP: "walk_up",
-	Direction.DOWN: "walk_down", 
-	Direction.LEFT: "walk_left",
-	Direction.RIGHT: "walk_right"
+	Direction.DOWN_LEFT: "walk_down_left",
+	Direction.DOWN_RIGHT: "walk_down_right", 
+	Direction.UP_LEFT: "walk_up_left",
+	Direction.UP_RIGHT: "walk_up_right"
 }
 
 var idle_anims = {
-	Direction.UP: "idle_up",
-	Direction.DOWN: "idle_down",
-	Direction.LEFT: "idle_left", 
-	Direction.RIGHT: "idle_right"
-}
-
-var attack_anims = {
-	Direction.UP: "attack_up",
-	Direction.DOWN: "attack_down",
-	Direction.LEFT: "attack_left",
-	Direction.RIGHT: "attack_right"
-}
-
-# Attack area configurations
-var attack_configs = {
-	Direction.DOWN: {"position": Vector2(-14, 52), "rotation": 0},
-	Direction.UP: {"position": Vector2(14, -10), "rotation": PI},
-	Direction.LEFT: {"position": Vector2(-15, 20), "rotation": PI/2},
-	Direction.RIGHT: {"position": Vector2(15, 20), "rotation": -PI/2}
+	Direction.DOWN_LEFT: "idle_down_left",
+	Direction.DOWN_RIGHT: "idle_down_right",
+	Direction.UP_LEFT: "idle_up_left", 
+	Direction.UP_RIGHT: "idle_up_right"
 }
 
 func _ready():
 	add_to_group("player")
-	attack_area.monitoring = false
-	attack_area.area_entered.connect(_on_attack_area_entered) 
-	player_sprite.animation_finished.connect(_on_attack_finished)
+	weapon_sprite.visible = false
+	animation_player.animation_finished.connect(_on_animation_finished)
+	# Connect to see what happens during animation
+	animation_player.animation_changed.connect(_on_animation_changed)
+	
+	
+func _on_animation_changed():
+	print("Animation changed to: ", animation_player.current_animation)
 
 func _physics_process(_delta: float) -> void:
+	if is_attacking:
+		return
+		
 	var input_vector = Vector2()
 	input_vector.x = Input.get_axis("move_left", "move_right")
 	input_vector.y = Input.get_axis("move_up", "move_down")
 	
-	# Always handle movement (even during attacks)
 	velocity = input_vector * speed
-	if is_attacking:
-		velocity *= 0.7
+	if input_vector.length() > 1:
+		velocity = velocity.normalized() * speed
 	move_and_slide()
 	
-	# Update direction and animations
 	if input_vector.length() > 0:
 		update_direction(input_vector)
-		if not is_attacking:
-			player_sprite.play(walk_anims[last_direction])
-	elif not is_attacking:
-		player_sprite.play(idle_anims[last_direction])
+		body_sprite.play(walk_anims[last_direction])
+		head_sprite.play(walk_anims[last_direction])
+	else:
+		body_sprite.play(idle_anims[last_direction])
+		head_sprite.play(idle_anims[last_direction])
 	
 	if Input.is_action_just_pressed("attack"):
-		attack()  # Remove the "and input_vector.length() == 0" condition
+		swing_weapon()
 	
 	i_frame_timer = max(0, i_frame_timer - _delta)
 
 func update_direction(input_vector: Vector2):
-	if abs(input_vector.x) > abs(input_vector.y):
-		last_direction = Direction.RIGHT if input_vector.x > 0 else Direction.LEFT
+	var is_up = input_vector.y < 0
+	var is_right = true
+	
+	if abs(input_vector.x) > 0.1:
+		is_right = input_vector.x > 0
 	else:
-		last_direction = Direction.DOWN if input_vector.y > 0 else Direction.UP
+		is_right = (last_direction == Direction.DOWN_RIGHT or last_direction == Direction.UP_RIGHT)
+	
+	var new_direction
+	if is_up:
+		new_direction = Direction.UP_RIGHT if is_right else Direction.UP_LEFT
+	else:
+		new_direction = Direction.DOWN_RIGHT if is_right else Direction.DOWN_LEFT
+		
+	last_direction = new_direction
 
-func attack():
-	swing_sound.pitch_scale = randf_range(0.8, 1.2)
-	swing_sound.play()
-	enemies_hit_this_attack.clear()
-	is_attacking = true
-	player_sprite.play(attack_anims[last_direction])
-	
-	# Add forward momentum based on direction
-	var lunge_distance = 15
-	var lunge_vector = Vector2.ZERO
-	
-	match last_direction:
-		Direction.DOWN:
-			lunge_vector = Vector2(0, lunge_distance)
-		Direction.UP:
-			lunge_vector = Vector2(0, -lunge_distance)
-		Direction.LEFT:
-			lunge_vector = Vector2(-lunge_distance, 0)
-		Direction.RIGHT:
-			lunge_vector = Vector2(lunge_distance, 0)
-	
-	# Apply the lunge movement
-	var tween = create_tween()
-	var target_position = global_position + lunge_vector
-	tween.tween_property(self, "global_position", target_position, 0.2)
-	
-	# Set up attack area
-	var config = attack_configs[last_direction]
-	attack_area.position = config.position
-	attack_area.rotation = config.rotation
-	attack_area.monitoring = true
-	
-# In player's _on_attack_area_entered:
-func _on_attack_area_entered(area: Area2D):
-	if area.name == "HitBox":
-		var slime = area.get_parent()
-		
-		if not is_instance_valid(slime) or slime.is_queued_for_deletion():
-			return
-		
-		if slime in enemies_hit_this_attack:
-			return
-		
-		enemies_hit_this_attack.append(slime)
-		
-		var hit_effect = preload("res://Scenes/Effects/HitEffect.tscn").instantiate()
-		get_tree().current_scene.add_child(hit_effect)
-		hit_effect.global_position = slime.global_position
-		hit_effect.get_child(0).restart()
-		
-		hit_sound.pitch_scale = randf_range(0.9, 1.1)
-		hit_sound.play()
-		await get_tree().create_timer(0.1).timeout
-		# Now do the hit stop
-		#Engine.time_scale = 0.1
-		#await get_tree().create_timer(0.01).timeout
-		#Engine.time_scale = 1.0
-		
-		if is_instance_valid(slime) and not slime.is_queued_for_deletion():
-			slime.take_damage(1)
-
-func _on_attack_finished():
+func swing_weapon():
 	if is_attacking:
-		attack_area.monitoring = false
-		is_attacking = false
+		return
 		
+	is_attacking = true
+	weapon_sprite.visible = true
+	body_sprite.stop()
+	head_sprite.stop()
+	
+	print("=== SWING DEBUG ===")
+	print("Direction: ", last_direction)
+	print("BEFORE setting flip - Body: ", body_sprite.flip_h, " Head: ", head_sprite.flip_h)
+	
+	# Set flip states based on direction
+	match last_direction:
+		Direction.DOWN_RIGHT:
+			animation_player.play("right_axe_swing")
+			print("Set RIGHT - Body: false, Head: false")
+		Direction.DOWN_LEFT:
+			animation_player.play("left_axe_swing")
+			print("Set LEFT - Body: true, Head: true")
+	
+	print("AFTER setting flip - Body: ", body_sprite.flip_h, " Head: ", head_sprite.flip_h)
+	print("=== END SWING DEBUG ===")
+
+func _on_animation_finished(anim_name: String):
+	var attack_animations = ["right_axe_swing", "left_axe_swing"]
+	if anim_name in attack_animations:
+		is_attacking = false
+		weapon_sprite.visible = false
+
 func take_damage(damage: int, attacker):
-	print("take damage called - i_Frame_timer: ", i_frame_timer)
 	if i_frame_timer <= 0:
 		health -= damage
 		i_frame_timer = 1.5
-		print("player health", health)
+		print("player health: ", health)
 		
-		# Add player knockback
 		var knockback_force = 100
 		var knockback_direction = (global_position - attacker.global_position).normalized()
 		
@@ -161,8 +126,6 @@ func take_damage(damage: int, attacker):
 		tween.tween_property(self, "global_position", target_pos, 0.2)
 		
 		start_i_frame_flash()
-	else:
-		print("damage blocked by i frames")
 
 func start_i_frame_flash():
 	var flash_tween = create_tween()
@@ -171,4 +134,6 @@ func start_i_frame_flash():
 	flash_tween.tween_method(flash_red, 1.0, 0.0, 0.1)
 
 func flash_red(amount: float):
-	player_sprite.modulate = Color(1.0, 1.0 - amount, 1.0 - amount)  # Red flash
+	var flash_color = Color(1.0, 1.0 - amount, 1.0 - amount)
+	body_sprite.modulate = flash_color
+	head_sprite.modulate = flash_color

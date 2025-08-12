@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bp4ku538hc4rs"
-path="res://.godot/imported/walking_blank.png-6fa4cf942b88b97e9d1f8aae2e67735e.ctex"
+uid="uid://dhemibiojjtil"
+path="res://.godot/imported/skeleton_player.png-a1f241ad23e515fb6cf76e3170796743.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Player/walking_blank.png"
-dest_files=["res://.godot/imported/walking_blank.png-6fa4cf942b88b97e9d1f8aae2e67735e.ctex"]
+source_file="res://Assets/Textures/Player/skeleton_player.png"
+dest_files=["res://.godot/imported/skeleton_player.png-a1f241ad23e515fb6cf76e3170796743.ctex"]
 
 [params]
 

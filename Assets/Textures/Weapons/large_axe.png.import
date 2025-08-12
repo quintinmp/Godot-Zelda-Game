@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://biyo8ajwrlyu"
-path="res://.godot/imported/walking_up.png-7dc8fb272bc7aa9e77652deec4992172.ctex"
+uid="uid://bnb5b7hpgy3qr"
+path="res://.godot/imported/large_axe.png-0adfbdda0c8903c621d290dc58bcc458.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Player/walking_up.png"
-dest_files=["res://.godot/imported/walking_up.png-7dc8fb272bc7aa9e77652deec4992172.ctex"]
+source_file="res://Assets/Textures/Weapons/large_axe.png"
+dest_files=["res://.godot/imported/large_axe.png-0adfbdda0c8903c621d290dc58bcc458.ctex"]
 
 [params]
 

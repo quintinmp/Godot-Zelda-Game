@@ -9,19 +9,19 @@ var health: int = 3
 var max_health: int = 3
 var slime_speed: float = 100.0 
 var player
-var detection_range: float = 300.0  # How far slime can "see" player
-var lose_target_range: float = 500.0  # How far before slime loses interest
-var attack_range: float = 150.0  # How close before slime gets aggressive
+var detection_range: float = 300.0
+var lose_target_range: float = 500.0
+var attack_range: float = 150.0
 var is_chasing: bool = false
 var patrol_center: Vector2
 var patrol_radius: float = 150.0
-var patrol_speed: float = 50.0  # Slower than chase speed
+var patrol_speed: float = 50.0
 var patrol_target: Vector2
 var patrol_timer: float = 0.0
-var patrol_wait_time: float = 2.0  # How long to wait at each patrol point
+var patrol_wait_time: float = 2.0
 var avoid_distance: float = 60.0
 var jump_timer: float = 0.0
-var jump_cooldown: float = 3.0  # Jump every 3 seconds
+var jump_cooldown: float = 5.0
 var is_jumping: bool = false
 var jump_target: Vector2
 var jump_height: float = 150.0
@@ -153,13 +153,14 @@ func take_damage(damage: int):
 	if health <= 0:
 		die()
 
+
 func die():
 	death_sound.pitch_scale = randf_range(0.8, 1.2)
 	death_sound.play()
 	await death_sound.finished
-	queue_free()
-	
-# Add this function:
+	queue_free()	
+
+
 func get_avoidance_force() -> Vector2:
 	var avoidance = Vector2.ZERO
 	var nearby_slimes = get_tree().get_nodes_in_group("slimes")
@@ -173,6 +174,7 @@ func get_avoidance_force() -> Vector2:
 	
 	return avoidance
 
+
 func start_jump():
 	is_jumping = true
 	jump_timer = 0.0
@@ -181,6 +183,7 @@ func start_jump():
 	var jump_distance = 250.0
 	jump_target = global_position + (direction_to_player * jump_distance)
 	slime_sprite.play("jump_start")
+
 
 func _on_animation_finished():
 	if is_jumping:
@@ -191,18 +194,16 @@ func _on_animation_finished():
 			is_jumping = false
 			jump_timer = 0.0
 
+
 func start_jump_arc():
 	hit_box.monitoring = false
 	jump_start_pos = global_position
 	var jump_tween = create_tween()
-	
-	# Use tween_method to control the entire jump trajectory
 	jump_tween.tween_method(update_jump_position, 0.0, 1.0, jump_duration)
-	# jump_tween.tween_callback(land_jump).set_delay(jump_duration)
+
 
 func update_jump_position(progress: float):
-	# Parabolic trajectory: y = 4h * t * (1-t), where t is progress (0 to 1)
-	var arc_progress = 4 * progress * (1 - progress)  # Creates parabola peaking at 0.5
+	var arc_progress = 4 * progress * (1 - progress)
 	# Interpolate horizontal position
 	var current_pos = Vector2()
 	current_pos.x = lerp(jump_start_pos.x, jump_target.x, progress)
@@ -215,7 +216,7 @@ func update_jump_position(progress: float):
 	current_pos.y -= arc_progress * jump_height  # Up is negative
 	
 	global_position = current_pos
-	slime_sprite.position.y = 0  # Reset sprite offset since we're moving the whole body
+	slime_sprite.position.y = 0
 
 	# shadow during jump
 	var height_ratio = arc_progress
@@ -225,10 +226,10 @@ func update_jump_position(progress: float):
 	shadow_sprite.position.y = arc_progress * jump_height
 	shadow_sprite.position.x = height_ratio * 10
 	
-	if progress > 0.85 and slime_sprite.animation == "jump_air":  # Almost done with jump
+	if progress > 0.85 and slime_sprite.animation == "jump_air":
 		land_jump()
+
 
 func land_jump():
 	hit_box.monitoring = true
 	slime_sprite.play("jump_land")
-	# jump_land will finish and trigger _on_animation_finished to set is_jumping = false
