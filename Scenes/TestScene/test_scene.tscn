@@ -67,18 +67,61 @@ position = Vector2(626, 331)
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
 position = Vector2(0, 1)
-
-[node name="Slime" parent="." instance=ExtResource("3_boajs")]
-position = Vector2(-89, -193)
-
-[node name="Slime2" parent="." instance=ExtResource("3_boajs")]
-position = Vector2(-216, -70)
+zoom = Vector2(0.9, 0.9)
 
 [node name="Slime3" parent="." instance=ExtResource("3_boajs")]
 position = Vector2(273, -29)
 
+[node name="Slime5" parent="." instance=ExtResource("3_boajs")]
+position = Vector2(11, 127)
+
+[node name="Slime6" parent="." instance=ExtResource("3_boajs")]
+position = Vector2(123, -107)
+
+[node name="Slime7" parent="." instance=ExtResource("3_boajs")]
+position = Vector2(485, -150)
+
+[node name="Slime8" parent="." instance=ExtResource("3_boajs")]
+position = Vector2(558, 10)
+
+[node name="Slime9" parent="." instance=ExtResource("3_boajs")]
+position = Vector2(919, -216)
+
+[node name="Slime10" parent="." instance=ExtResource("3_boajs")]
+position = Vector2(618, -307)
+
+[node name="Slime11" parent="." instance=ExtResource("3_boajs")]
+position = Vector2(239, -319)
+
+[node name="Slime12" parent="." instance=ExtResource("3_boajs")]
+position = Vector2(826, -94)
+
+[node name="Slime13" parent="." instance=ExtResource("3_boajs")]
+position = Vector2(827, -392)
+
+[node name="Slime14" parent="." instance=ExtResource("3_boajs")]
+position = Vector2(1169, -413)
+
+[node name="Slime15" parent="." instance=ExtResource("3_boajs")]
+position = Vector2(1208, -227)
+
+[node name="Slime16" parent="." instance=ExtResource("3_boajs")]
+position = Vector2(1381, -395)
+
+[node name="Slime17" parent="." instance=ExtResource("3_boajs")]
+position = Vector2(1444, -90)
+
+[node name="Slime18" parent="." instance=ExtResource("3_boajs")]
+position = Vector2(958, -507)
+
+[node name="Slime19" parent="." instance=ExtResource("3_boajs")]
+position = Vector2(643, -539)
+
+[node name="Slime20" parent="." instance=ExtResource("3_boajs")]
+position = Vector2(321, -507)
+
+[node name="Slime21" parent="." instance=ExtResource("3_boajs")]
+position = Vector2(-106, -241)
+
 [node name="Slime4" parent="." instance=ExtResource("3_boajs")]
 position = Vector2(-235, -605)
-
-[node name="Slime5" parent="." instance=ExtResource("3_boajs")]
-position = Vector2(55, 95)

@@ -130,18 +130,24 @@ func _physics_process(delta: float) -> void:
 		shadow_sprite.position = Vector2.ZERO
 
 
-func take_damage(damage: int):
+func take_damage(damage: int, attacker = null):
 	health -= damage
 	
 	# Flash white then back to normal
-	slime_sprite.self_modulate = Color(100, 100, 100, 1)  # Very bright white
+	slime_sprite.self_modulate = Color(100, 100, 100, 1)
 	var flash_tween = create_tween()
 	flash_tween.tween_property(slime_sprite, "self_modulate", Color(1, 1, 1, 1), 0.4)
 	
-	# Knockback effect
+	# Knockback effect - use attacker position if provided
 	var knockback_force = 100
-	var player = get_tree().get_first_node_in_group("player")
-	var knockback_direction = (global_position - player.global_position).normalized()
+	var knockback_direction: Vector2
+	
+	if attacker:
+		knockback_direction = (global_position - attacker.global_position).normalized()
+	else:
+		# Fallback to finding player
+		var player = get_tree().get_first_node_in_group("player")
+		knockback_direction = (global_position - player.global_position).normalized()
 	
 	var tween = create_tween()
 	var target_pos = global_position + (knockback_direction * knockback_force)
@@ -155,6 +161,16 @@ func take_damage(damage: int):
 
 
 func die():
+	# Immediately disable all collision and AI
+	set_physics_process(false)  # Stop movement/AI
+	hit_box.monitoring = false  # Can't hurt player anymore
+	collision_layer = 0         # Can't be hit by player
+	collision_mask = 0          # Can't collide with anything
+	
+	# Visual feedback
+	slime_sprite.modulate = Color(0.5, 0.5, 0.5, 0.8)  # Make it look "dead"
+	
+	# Play death sound
 	death_sound.pitch_scale = randf_range(0.8, 1.2)
 	death_sound.play()
 	await death_sound.finished

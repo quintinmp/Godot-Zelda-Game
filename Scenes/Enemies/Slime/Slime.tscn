@@ -129,16 +129,13 @@ texture = ExtResource("3_6clil")
 offset = Vector2(1, 5)
 
 [node name="SlimeCollision" type="CollisionShape2D" parent="."]
-visible = false
 scale = Vector2(4, 4)
 shape = SubResource("CircleShape2D_oi5nh")
 
 [node name="HitBox" type="Area2D" parent="."]
-visible = false
-collision_layer = 2
+collision_layer = 3
 
 [node name="HitBoxCollision" type="CollisionShape2D" parent="HitBox"]
-visible = false
 position = Vector2(0, -1)
 scale = Vector2(4, 4)
 shape = SubResource("CircleShape2D_qmdr4")
