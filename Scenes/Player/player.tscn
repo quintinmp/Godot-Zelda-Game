@@ -624,6 +624,7 @@ position = Vector2(-5, 0)
 shape = SubResource("CapsuleShape2D_htcer")
 
 [node name="AttackArea" type="Area2D" parent="."]
+visible = false
 light_mask = 6
 position = Vector2(-14, 52)
 
