@@ -7,7 +7,7 @@ extends CharacterBody2D
 var hit_effect_scene = preload("res://Scenes/Effects/HitEffect.tscn")
 
 enum Direction {DOWN_LEFT, DOWN_RIGHT, UP_LEFT, UP_RIGHT}
-var speed: float = 250.0
+var speed: float = 1250.0
 var last_direction: Direction = Direction.DOWN_LEFT
 var health = 100
 var is_attacking = false
