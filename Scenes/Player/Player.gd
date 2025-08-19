@@ -41,6 +41,7 @@ func _ready():
 	# Connect to animation finished signal
 	character_sprite.animation_finished.connect(_on_attack_finished)
 
+
 func _physics_process(_delta: float) -> void:
 	# Don't move during attacks
 	if is_attacking:
@@ -66,7 +67,7 @@ func _physics_process(_delta: float) -> void:
 	# Handle attack input
 	if Input.is_action_just_pressed("attack"):
 		attack()
-	
+		
 	i_frame_timer = max(0, i_frame_timer - _delta)
 
 func update_direction(input_vector: Vector2):
@@ -132,7 +133,6 @@ func add_attack_lunge():
 func start_attack_detection():
 	# Enable monitoring immediately
 	attack_area.monitoring = true
-	print("Attack detection started")
 	
 	# Create a timer for attack duration instead of using await
 	var attack_timer = Timer.new()
@@ -162,31 +162,17 @@ func position_attack_hitbox():
 			attack_area.position = Vector2(-original_attack_position.x - 87, original_attack_position.y - 50)
 
 func activate_attack_hitbox():
-	print("=== BEFORE MONITORING ===")
-	print("AttackArea monitoring: ", attack_area.monitoring)
-	print("AttackArea layer: ", attack_area.collision_layer)
-	print("AttackArea mask: ", attack_area.collision_mask)
-	
 	attack_area.monitoring = true
-	
-	print("=== AFTER ENABLING MONITORING ===")
-	print("AttackArea monitoring: ", attack_area.monitoring)
-	
 	# Wait a frame for collision detection to update
 	await get_tree().process_frame
 	
-	print("=== COLLISION CHECK ===")
 	var overlapping = attack_area.get_overlapping_bodies()
 	var overlapping_areas = attack_area.get_overlapping_areas()
-	
-	print("Overlapping bodies: ", overlapping.size())
-	print("Overlapping areas: ", overlapping_areas.size())
 	
 	for area in overlapping_areas:
 		print("  Area: ", area.name)
 		var parent = area.get_parent()
 		if parent and parent.has_method("take_damage"):
-			print("    Dealing damage to: ", parent.name)
 			parent.take_damage(25, self)
 
 func deactivate_attack_hitbox():
@@ -198,10 +184,8 @@ func _on_attack_finished():
 		is_attacking = false
 
 func _on_attack_hit(area):
-	print("HIT DETECTED: ", area.name)
 	var parent = area.get_parent()
 	if parent and parent.has_method("take_damage") and parent != self:
-		print("Dealing damage to: ", parent.name)
 		parent.take_damage(25, self)
 		
 				# Play hit sound
@@ -224,7 +208,6 @@ func spawn_hit_effect(position: Vector2):
 
 func end_attack_detection():
 	attack_area.monitoring = false
-	print("Attack detection ended")
 
 func take_damage(damage: int, attacker):
 	if i_frame_timer <= 0:
@@ -250,3 +233,19 @@ func start_i_frame_flash():
 func flash_red(amount: float):
 	var flash_color = Color(1.0, 1.0 - amount, 1.0 - amount)
 	character_sprite.modulate = flash_color
+
+# === DEBUG HOTKEYS ===
+func _input(event):
+	# Debug time controls (number keys)
+	if event.is_action_pressed("debug_hour"):      # We'll set this to "1" key
+		TimeSystem.advance_one_hour()
+	elif event.is_action_pressed("debug_day"):     # "2" key  
+		TimeSystem.advance_one_day()
+	elif event.is_action_pressed("debug_season"):  # "3" key
+		TimeSystem.advance_one_season()
+	elif event.is_action_pressed("debug_pause"):   # "P" key
+		TimeSystem.toggle_pause()
+	elif event.is_action_pressed("debug_speed"):   # "0" key
+		TimeSystem.set_speed(10.0)
+	elif event.is_action_pressed("ui_select"):  # Enter key
+		print("Current position: ", global_position)

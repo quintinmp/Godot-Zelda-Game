@@ -6,10 +6,12 @@ func _ready():
 
 func _on_body_entered(body):
 	if body.name == "Player":
-		# Make the foreground walls transparent
-		get_parent().modulate.a = 0.3
+		# Smooth transition to transparent
+		var tween = create_tween()
+		tween.tween_property(get_parent(), "modulate:a", 0.3, 0.5)  # 0.5 second fade
 
 func _on_body_exited(body):
 	if body.name == "Player":
-		# Make the foreground walls opaque
-		get_parent().modulate.a = 1.0
+		# Smooth transition to opaque
+		var tween = create_tween()
+		tween.tween_property(get_parent(), "modulate:a", 1.0, 0.5)  # 0.5 second fade
