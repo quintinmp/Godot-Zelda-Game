@@ -41,7 +41,6 @@ func _ready():
 	# Connect to animation finished signal
 	character_sprite.animation_finished.connect(_on_attack_finished)
 
-
 func _physics_process(_delta: float) -> void:
 	# Don't move during attacks
 	if is_attacking:
@@ -67,7 +66,7 @@ func _physics_process(_delta: float) -> void:
 	# Handle attack input
 	if Input.is_action_just_pressed("attack"):
 		attack()
-		
+
 	i_frame_timer = max(0, i_frame_timer - _delta)
 
 func update_direction(input_vector: Vector2):
@@ -237,15 +236,21 @@ func flash_red(amount: float):
 # === DEBUG HOTKEYS ===
 func _input(event):
 	# Debug time controls (number keys)
-	if event.is_action_pressed("debug_hour"):      # We'll set this to "1" key
+	if event.is_action_pressed("debug_hour"):      # h
 		TimeSystem.advance_one_hour()
-	elif event.is_action_pressed("debug_day"):     # "2" key  
+	elif event.is_action_pressed("debug_day"):     # "j" key  
 		TimeSystem.advance_one_day()
-	elif event.is_action_pressed("debug_season"):  # "3" key
+	elif event.is_action_pressed("debug_season"):  # "k" key
 		TimeSystem.advance_one_season()
 	elif event.is_action_pressed("debug_pause"):   # "P" key
 		TimeSystem.toggle_pause()
-	elif event.is_action_pressed("debug_speed"):   # "0" key
+	elif event.is_action_pressed("debug_speed"):   # "l" key
 		TimeSystem.set_speed(10.0)
 	elif event.is_action_pressed("ui_select"):  # Enter key
 		print("Current position: ", global_position)
+	if event is InputEventKey and event.pressed:
+		if event.keycode == KEY_I:
+			# Test adding items - use get_node if needed
+			get_node("/root/InventoryManager").try_add_item("wood", 5)
+			# OR just use the direct name (should work if autoload is set up)
+			InventoryManager.try_add_item("wood", 5)

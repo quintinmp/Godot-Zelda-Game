@@ -217,6 +217,7 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7mr8v"]
+size = Vector2(27.25, 33.5)
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_eph7w"]
 radius = 5.0
@@ -227,19 +228,16 @@ scale = Vector2(4, 4)
 script = ExtResource("1_u75bn")
 
 [node name="NPCSprite" type="AnimatedSprite2D" parent="."]
-position = Vector2(-88, 29.5)
+position = Vector2(0.25, -0.25)
 sprite_frames = SubResource("SpriteFrames_nyftf")
 animation = &"walk"
 
 [node name="NPCArea" type="Area2D" parent="."]
-visible = false
 
 [node name="NPCAreaCollision" type="CollisionShape2D" parent="NPCArea"]
-visible = false
-position = Vector2(0, 5)
+position = Vector2(0.375, 5.5)
 shape = SubResource("RectangleShape2D_7mr8v")
 
 [node name="NPCCollision" type="CollisionShape2D" parent="."]
-visible = false
 position = Vector2(0, 5)
 shape = SubResource("CapsuleShape2D_eph7w")

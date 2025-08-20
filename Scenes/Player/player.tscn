@@ -618,7 +618,6 @@ sprite_frames = SubResource("SpriteFrames_bmb2s")
 animation = &"idle_up_left"
 
 [node name="PlayerCollision" type="CollisionShape2D" parent="."]
-light_mask = 3
 position = Vector2(-5, 0)
 shape = SubResource("CapsuleShape2D_htcer")
 
