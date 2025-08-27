@@ -1,6 +1,13 @@
 # Main scene script
 extends Node2D
 
+func _ready():
+	var tilemap = $WorldContainer/SpiritTown/WallsAndObjects
+	print("Tilemap found: ", tilemap != null)
+	if tilemap:
+		print("Tilemap name: ", tilemap.name)
+	ToolSystem.set_main_tilemap(tilemap)
+
 func add_screen_shake(intensity = 5.0):
 	var camera = get_viewport().get_camera_2d()
 	

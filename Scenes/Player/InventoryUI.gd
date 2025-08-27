@@ -411,11 +411,57 @@ func update_hotbar_selection():
 	for i in range(slot_buttons.size()):
 		var button = slot_buttons[i]
 		if i == InventoryManager.selected_hotbar_slot:
-			# Highlight selected slot
-			button.modulate = Color.YELLOW if InventoryManager.hotbar[i] == null else Color.WHITE
-			# Add yellow border/glow effect could go here
+			# Reset normal modulation
+			button.modulate = Color.WHITE if InventoryManager.hotbar[i] != null else Color.WHITE
+			# Add white border
+			add_selection_border(button)
 		else:
 			button.modulate = Color.WHITE if InventoryManager.hotbar[i] != null else Color.GRAY
+			remove_selection_border(button)
+
+func add_selection_border(button: Button):
+	# Check if border already exists
+	var border = button.get_node_or_null("SelectionBorder")
+	if not border:
+		border = NinePatchRect.new()
+		border.name = "SelectionBorder"
+		
+		# Create a simple white border texture
+		var border_texture = create_border_texture()
+		border.texture = border_texture
+		
+		# Position to cover the entire button
+		border.anchor_left = 0.0
+		border.anchor_top = 0.0
+		border.anchor_right = 1.0
+		border.anchor_bottom = 1.0
+		border.mouse_filter = Control.MOUSE_FILTER_IGNORE  # Don't block button clicks
+		
+		button.add_child(border)
+	
+	border.visible = true
+
+func remove_selection_border(button: Button):
+	var border = button.get_node_or_null("SelectionBorder")
+	if border:
+		border.visible = false
+
+func create_border_texture() -> Texture2D:
+	# Create a simple white border image
+	var image = Image.create(SLOT_SIZE, SLOT_SIZE, false, Image.FORMAT_RGBA8)
+	image.fill(Color.TRANSPARENT)
+	
+	# Draw white border (4 pixel thick)
+	var border_thickness = 4
+	for x in range(SLOT_SIZE):
+		for y in range(SLOT_SIZE):
+			if x < border_thickness or x >= SLOT_SIZE - border_thickness or \
+			   y < border_thickness or y >= SLOT_SIZE - border_thickness:
+				image.set_pixel(x, y, Color.WHITE)
+	
+	var texture = ImageTexture.new()
+	texture.set_image(image)
+	return texture
 
 func set_button_item_display(button: Button, item_stack):
 	# Get the icon from InventoryManager

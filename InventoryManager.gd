@@ -213,6 +213,7 @@ func set_item_at_slot(slot_pos: Vector2i, item: ItemStack):
 		if backpack_index >= 0 and backpack_index < BACKPACK_SIZE:
 			backpack[backpack_index] = item
 			inventory_changed.emit()
+			
 
 # === INPUT HANDLING ===
 

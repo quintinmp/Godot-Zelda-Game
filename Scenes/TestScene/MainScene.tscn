@@ -2546,6 +2546,7 @@ separation = Vector2i(1, 1)
 6:10/0 = 0
 7:10/0 = 0
 8:10/0 = 0
+8:10/0/custom_data_0 = 1
 9:10/0 = 0
 10:10/0 = 0
 11:10/0 = 0
@@ -3959,8 +3960,11 @@ separation = Vector2i(1, 1)
 59:30/0 = 0
 0:31/0 = 0
 1:31/0 = 0
+1:31/0/custom_data_0 = 2
 2:31/0 = 0
+2:31/0/custom_data_0 = 3
 3:31/0 = 0
+3:31/0/custom_data_0 = 4
 4:31/0 = 0
 5:31/0 = 0
 6:31/0 = 0
@@ -4019,6 +4023,8 @@ separation = Vector2i(1, 1)
 
 [sub_resource type="TileSet" id="TileSet_4231a"]
 physics_layer_0/collision_layer = 4
+custom_data_layer_0/name = "tile_type"
+custom_data_layer_0/type = 2
 sources/0 = SubResource("TileSetAtlasSource_2gkxf")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_jy83s"]
@@ -6008,7 +6014,7 @@ script = ExtResource("6_s622u")
 
 [node name="Player" parent="." instance=ExtResource("6_jy83s")]
 z_index = 1
-position = Vector2(-422, -962)
+position = Vector2(-2568, 1677)
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
 visible = false

@@ -232,6 +232,35 @@ func start_i_frame_flash():
 func flash_red(amount: float):
 	var flash_color = Color(1.0, 1.0 - amount, 1.0 - amount)
 	character_sprite.modulate = flash_color
+	
+	
+func start_tool_animation(tool_type: String, duration: float):
+	# Set tool animation state
+	is_attacking = true  # Reuse attack state to prevent movement
+	
+	# Get the appropriate animation name based on current direction and tool type
+	var anim_name = get_tool_animation_name(tool_type)
+	character_sprite.play(anim_name)
+
+func end_tool_animation():
+	# Reset to idle when tool animation finishes
+	is_attacking = false
+	character_sprite.play(idle_anims[last_direction])
+
+func get_tool_animation_name(tool_type: String) -> String:
+	# Map tool types to your animation names based on direction
+	var direction_suffix = ""
+	match last_direction:
+		Direction.DOWN_LEFT:
+			direction_suffix = "down_left"
+		Direction.DOWN_RIGHT:
+			direction_suffix = "down_right"
+		Direction.UP_LEFT:
+			direction_suffix = "up_left"
+		Direction.UP_RIGHT:
+			direction_suffix = "up_right"
+	
+	return tool_type + "_" + direction_suffix
 
 # === DEBUG HOTKEYS ===
 func _input(event):
