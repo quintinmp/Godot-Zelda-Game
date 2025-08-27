@@ -1095,7 +1095,7 @@ script = ExtResource("1_cvnsp")
 z_index = 3
 scale = Vector2(4, 4)
 sprite_frames = SubResource("SpriteFrames_bmb2s")
-animation = &"pickaxe_down_left"
+animation = &"attack_up_right"
 
 [node name="PlayerCollision" type="CollisionShape2D" parent="."]
 position = Vector2(-5, 0)

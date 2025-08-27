@@ -3,10 +3,18 @@ extends Node2D
 
 func _ready():
 	var tilemap = $WorldContainer/SpiritTown/WallsAndObjects
-	print("Tilemap found: ", tilemap != null)
-	if tilemap:
-		print("Tilemap name: ", tilemap.name)
+	
+	# Connect ToolSystem to tilemap
 	ToolSystem.set_main_tilemap(tilemap)
+	
+	# Add crop renderer to main scene
+	var crop_renderer = preload("res://CropRenderer.gd").new()
+	add_child(crop_renderer)
+	crop_renderer.set_main_tilemap(tilemap)
+	
+	# Match the transform of your world container
+	crop_renderer.position = $WorldContainer.position
+	crop_renderer.scale = $WorldContainer.scale
 
 func add_screen_shake(intensity = 5.0):
 	var camera = get_viewport().get_camera_2d()

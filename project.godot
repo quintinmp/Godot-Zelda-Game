@@ -24,6 +24,7 @@ AudioManager="*res://AudioManager.gd"
 TimeSystem="*res://TimeSystem.gd"
 InventoryManager="*res://InventoryManager.gd"
 ToolSystem="*res://ToolSystem.gd"
+CropSystem="*res://CropSystem.gd"
 
 [display]
 

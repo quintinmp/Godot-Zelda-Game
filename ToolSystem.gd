@@ -176,9 +176,19 @@ func plant_seeds(seed_id: String, pos: Vector2i, tile_type: int):
 # === HARVEST HANDLING ===
 func try_harvest_at_cursor():
 	var target_position = get_cursor_tile_position()
-	# TODO: Check if there's a mature crop at target position
-	# For now, just print debug
-	print("Trying to harvest at: ", target_position)
+	
+	# Check if there's a harvestable crop at target position
+	var crop_system = get_node("/root/CropSystem")
+	if crop_system and crop_system.can_harvest_at(target_position):
+		var result = crop_system.harvest_crop_at(target_position)
+		if result.success:
+			# Add harvested item to inventory
+			inventory_manager.try_add_item(result.item_id, result.quantity)
+			print("Harvested: ", result.message)
+		else:
+			print("Harvest failed: ", result.message)
+	else:
+		print("Nothing to harvest at: ", target_position)
 
 # === TOOL VALIDATION ===
 func can_use_tool(tool_id: String, target_pos: Vector2i) -> bool:
